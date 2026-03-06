@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% set title = "TalentMirror • Start" %}
+
+{% block content %}
+  <section class="card">
+    <h1>Start your TalentMirror interview</h1>
+    <p class="muted">
+      Upload your resume, then the app generates 10 tailored questions and runs a guided interview with Text-to-Speech.
+    </p>
+
+    <form method="post" enctype="multipart/form-data" class="form">
+      {{ form.hidden_tag() }}
+
+      <div class="grid-2">
+        <div class="field">
+          <label>{{ form.full_name.label }}</label>
+          {{ form.full_name(class_="input", placeholder="e.g., Priyanka") }}
+          {% for e in form.full_name.errors %}<div class="error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>{{ form.email.label }}</label>
+          {{ form.email(class_="input", placeholder="optional") }}
+          {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>{{ form.role_target.label }}</label>
+          {{ form.role_target(class_="input") }}
+          {% for e in form.role_target.errors %}<div class="error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>{{ form.resume_file.label }}</label>
+          {{ form.resume_file(class_="input") }}
+          {% for e in form.resume_file.errors %}<div class="error">{{ e }}</div>{% endfor %}
+          <div class="hint">Allowed: .pdf, .docx (max 8MB)</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        {{ form.submit(class_="btn") }}
+      </div>
+    </form>
+
+    <div class="note">
+      <b>Tip:</b> If PDF extraction looks wrong, try exporting the resume as a “text-based PDF” (not scanned images).
+    </div>
+  </section>
+{% endblock %}

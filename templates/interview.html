@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% set title = "TalentMirror • Interview" %}
+
+{% block content %}
+  <section class="card">
+    <div class="row space-between">
+      <div>
+        <h1>Interview in progress</h1>
+        <div class="muted">
+          Candidate: <b>{{ candidate.full_name }}</b> • Role: <b>{{ role_target }}</b>
+        </div>
+      </div>
+      <div class="pill">Question {{ q_index }} / 10</div>
+    </div>
+
+    <hr/>
+
+    <div class="question-wrap">
+      <div class="label">Question</div>
+      <div id="questionText" class="question">{{ question.question_text }}</div>
+
+    <div class="tts-row">
+      <!-- TTS controls -->
+      <button type="button" class="btn secondary" id="speakBtn">🔊 Speak</button>
+      <button type="button" class="btn ghost" id="stopBtn">Stop</button>
+
+      <!-- Mic controls (Speech-to-text) -->
+      <button type="button" class="btn" id="micBtn">🎙️ Start Mic</button>
+      <button type="button" class="btn ghost" id="micStopBtn" disabled>Stop Mic</button>
+
+      <span class="hint" id="micStatus">
+        You can type OR speak your answer (speech will be converted to text).
+      </span>
+    </div>
+    </div>
+
+    <form method="post" class="form">
+      {{ form.hidden_tag() }}
+      <div class="field">
+        <label>{{ form.answer.label }}</label>
+        {{ form.answer(class_="textarea", id="answerBox", rows="7", placeholder="Type your answer here or use the microphone...") }}
+        {% for e in form.answer.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="actions space-between">
+        <a class="btn ghost" href="{{ url_for('restart', session_id=iv_session.id) }}">Restart</a>
+        {{ form.submit(class_="btn") }}
+      </div>
+    </form>
+  </section>
+
+  <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+  <script>
+    window.addEventListener("load", () => {
+      window.TalentMirrorTTS.speak(document.getElementById("questionText").innerText);
+    });
+  </script>
+{% endblock %}

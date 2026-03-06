@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% set title = "TalentMirror • Report" %}
+
+{% block content %}
+  <section class="card">
+    <div class="row space-between">
+      <div>
+        <h1>Candidate profile & benchmarking</h1>
+        <div class="muted">
+          Candidate: <b>{{ candidate.full_name }}</b>
+          {% if candidate.email %} • {{ candidate.email }}{% endif %}
+          • Role target: <b>{{ iv_session.role_target }}</b>
+        </div>
+      </div>
+      <a class="btn secondary" href="{{ url_for('restart', session_id=iv_session.id) }}">Run again</a>
+    </div>
+
+    <hr/>
+
+    <h2>Overall summary</h2>
+    <p>{{ profile.overall_summary }}</p>
+
+    <div class="grid-2">
+      <div>
+        <h3>Strengths</h3>
+        <ul>
+          {% for s in profile.strengths %}
+            <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h3>Gaps</h3>
+        <ul>
+          {% for g in profile.gaps %}
+            <li>{{ g }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <h2>Competency scores</h2>
+    <div class="bars">
+      {% for k, v in profile.competency_scores.items() %}
+        <div class="bar-row">
+          <div class="bar-label">{{ k.replace("_"," ").title() }}</div>
+          <div class="bar">
+            <div class="bar-fill" style="width: {{ v }}%"></div>
+          </div>
+          <div class="bar-val">{{ v }}/100</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2>Benchmarking (vs typical peers)</h2>
+    <p class="muted">{{ benchmark.note }}</p>
+    <div class="bars">
+      {% for k, p in benchmark.percentiles.items() %}
+        <div class="bar-row">
+          <div class="bar-label">{{ k.replace("_"," ").title() }}</div>
+          <div class="bar">
+            <div class="bar-fill" style="width: {{ p }}%"></div>
+          </div>
+          <div class="bar-val">P{{ p }}</div>
+        </div>
+        <div class="hint">{{ benchmark.explain[k] }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="pill big">
+      Overall percentile estimate: <b>P{{ benchmark.overall_percentile_estimate }}</b>
+    </div>
+
+    <h2>Per-question feedback</h2>
+    <div class="qa">
+      {% for item in profile.per_question %}
+        <div class="qa-item">
+          <div class="qa-head">
+            <div class="pill">Q{{ item.q_index }}</div>
+            <div class="muted">Score: <b>{{ item.score_1_to_5 }}/5</b></div>
+          </div>
+          <div><b>Notes:</b> {{ item.notes }}</div>
+          <div><b>Tip:</b> {{ item.improvement_tip }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <h2>Recommended next steps</h2>
+    <ol>
+      {% for step in profile.recommended_next_steps %}
+        <li>{{ step }}</li>
+      {% endfor %}
+    </ol>
+  </section>
+{% endblock %}
